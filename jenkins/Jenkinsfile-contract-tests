@@ -10,8 +10,6 @@ pipeline {
   stages {
     stage ('Get Latest Prod Version From Pact Broker') {
       steps {
-        sh 'curl -LO https://github.com/pact-foundation/pact-ruby-standalone/releases/download/v1.61.1/pact-1.61.1-linux-x86_64.tar.gz'
-        sh 'tar xzf pact-1.61.1-linux-x86_64.tar.gz'
         dir('pact/bin') {
           script {
             env.PROD_VERSION = sh(script: "./pact-broker describe-version -a quote-generator -b http://localhost -l prod | tail -1 | cut -f 1 -d \\|", returnStdout: true).trim()
@@ -22,19 +20,17 @@ pipeline {
     }
     stage("Checkout Latest Prod Version") {
       steps {
-        sh "git checkout ${PROD_VERSION}"
+        bat "git checkout ${PROD_VERSION}"
       }
     }
 
     stage ('Run Contract Tests') {
       steps {
-        dir('user-service') {
-          sh "mvn clean test " +
+          bat "mvn clean test " +
                   "-Pcontract-tests " +
                   "-Dpact.provider.version=${PROD_VERSION} " +
                   "-Dpact.verifier.publishResults=true " +
                   "-Dpactbroker.tags=prod,${params.pactConsumerTags}"
-        }
       }
     }
   }
