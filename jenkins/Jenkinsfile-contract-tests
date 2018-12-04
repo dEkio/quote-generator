@@ -19,7 +19,7 @@ pipeline {
       steps {
           bat "mvn clean test " +
                   "-Pcontract-tests " +
-                  "-Dpact.provider.version=%pactConsumerVersion%" +
+                  "-Dpact.provider.version=%pactConsumerVersion% " +
                   "-Dpact.verifier.publishResults=true " +
                   "-Dpactbroker.tags=prod,%pactConsumerTags%"
       }
