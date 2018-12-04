@@ -10,7 +10,7 @@ pipeline {
     stages {
         stage('Build') {
             steps {
-                bat "mvn clean verify -Dpactbroker.tags=${params.pactConsumerTags}"
+                bat "mvn clean verify -Dpactbroker.tags=${params.pactConsumerTags} -Dpact.verifier.publishResults=true"
             }
         }
 

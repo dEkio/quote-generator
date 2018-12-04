@@ -5,22 +5,13 @@ pipeline {
 
   parameters {
     string(name: 'pactConsumerTags', defaultValue: 'master', description: 'Tags to verify')
+    string(name: 'pactConsumerVersion', defaultValue: '1', description: 'Version to verify')
   }
 
   stages {
-    stage ('Get Latest Prod Version From Pact Broker') {
-      steps {
-        dir('pact/bin') {
-          script {
-            env.PROD_VERSION = bat(script: "./pact-broker describe-version -a quote-generator -b http://localhost -l prod | tail -1 | cut -f 1 -d \\|", returnStdout: true).trim()
-          }
-        }
-        echo "Current prod version: " + PROD_VERSION
-      }
-    }
     stage("Checkout Latest Prod Version") {
       steps {
-        bat "git checkout ${PROD_VERSION}"
+        bat "git checkout origin/master"
       }
     }
 
@@ -28,9 +19,9 @@ pipeline {
       steps {
           bat "mvn clean test " +
                   "-Pcontract-tests " +
-                  "-Dpact.provider.version=${PROD_VERSION} " +
+                  "-Dpact.provider.version=%pactConsumerVersion%" +
                   "-Dpact.verifier.publishResults=true " +
-                  "-Dpactbroker.tags=prod,${params.pactConsumerTags}"
+                  "-Dpactbroker.tags=prod,%pactConsumerTags%"
       }
     }
   }
