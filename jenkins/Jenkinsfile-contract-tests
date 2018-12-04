@@ -12,7 +12,7 @@ pipeline {
       steps {
         dir('pact/bin') {
           script {
-            env.PROD_VERSION = sh(script: "./pact-broker describe-version -a quote-generator -b http://localhost -l prod | tail -1 | cut -f 1 -d \\|", returnStdout: true).trim()
+            env.PROD_VERSION = bat(script: "./pact-broker describe-version -a quote-generator -b http://localhost -l prod | tail -1 | cut -f 1 -d \\|", returnStdout: true).trim()
           }
         }
         echo "Current prod version: " + PROD_VERSION
