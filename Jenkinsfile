@@ -5,6 +5,7 @@ pipeline {
 
     parameters {
         string(name: 'pactConsumerTags', defaultValue: 'master')
+        string(name: 'pactVersion', defaultValue: '1')
     }
     stages {
         stage('Build') {
@@ -16,7 +17,7 @@ pipeline {
         stage('Check Pact Verifications') {
             steps {
                 dir('pact/bin') {
-                    bat ".\\pact-broker.bat can-i-deploy -a quote-generator -b http://localhost -e ${GIT_COMMIT}"
+                    bat ".\\pact-broker.bat can-i-deploy -a quote-generator -b http://localhost -e ${params.pactVersion}"
                 }
             }
         }
