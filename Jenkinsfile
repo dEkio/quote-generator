@@ -8,7 +8,9 @@ pipeline {
     }
     stages {
         stage('Build') {
-            bat "mvn clean verify -Dpactbroker.tags=${params.pactConsumerTags}"
+            steps {
+                bat "mvn clean verify -Dpactbroker.tags=${params.pactConsumerTags}"
+            }
         }
 
         stage('Check Pact Verifications') {
